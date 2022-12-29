@@ -61,7 +61,7 @@ app.post("/api/v1/restaurants", async (req, res) => {
         res.status(201).json({
             status: "success",
             data: {
-                restaurant: results.rows
+                restaurant: results.rows[0]
             }
         })
     } catch (err) {
@@ -71,22 +71,32 @@ app.post("/api/v1/restaurants", async (req, res) => {
 })
 
 // Update Restaurants
-app.put("/api/v1/restaurants/:id", (req, res) => {
-    console.log(req.params.id)
-    console.log(req.body)
-    res.status(404).json({
-        status: "success",
-        data: {
-            restaurant: "mcdonalds"
-        }
-    })
+app.put("/api/v1/restaurants/:id", async (req, res) => {
+    try {
+        const results = await db.query("UPDATE restaurants SET name = $1, location=$2, price_range=$3 WHERE id=$4 returning *", [req.body.name, req.body.location, req.body.price_range, req.params.id])
+        res.status(201).json({
+            status: "success",
+            data: {
+                restaurant: results.rows[0]
+            }
+        })
+    } catch (err) {
+        console.log(err)
+    }
+    
 })
 
 // Delete a Restaurant
-app.delete("/api/v1/restaurant/:id", (req, res) => {
-    res.status(204).json({
-        status: "success",
-    });
+app.delete("/api/v1/restaurants/:id", async (req, res) => {
+    try {
+        const results = await db.query("DELETE FROM restaurants WHERE id=$1", [req.params.id]);
+        res.status(204).json({
+            status: "success"
+        });
+    } catch (err) {
+        console.log(err);
+    }
+    
 })
 app.listen(port, () => {
     console.log(`server is up and listening on port ${port}`);
