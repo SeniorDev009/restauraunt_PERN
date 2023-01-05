@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
 const db = require('./db')
 const morgan = require("morgan");
 
@@ -8,6 +9,9 @@ const port = process.env.PORT || 3002;
 
 // middleware
 app.use(morgan("tiny"));
+
+// Cors
+app.use(cors());
 
 // second middleware
 app.use((req, res, next) => {
@@ -21,7 +25,7 @@ app.use(express.json());
 app.get("/api/v1/restaurants", async (req, res) => {
     try {
         const results = await db.query("select * from restaurants");
-        console.log(results);
+        
         res.status(200).json({
             status: "success",
             results: results.rows.length,
