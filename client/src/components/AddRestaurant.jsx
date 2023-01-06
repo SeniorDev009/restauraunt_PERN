@@ -3,7 +3,7 @@ import React from 'react'
 const AddRestaurant = () => {
     return (
         <div className='container mt-3'>
-            <form action="">
+            <form>
                 <div className="row">
                     <div className="col">
                         <input type="text" className="form-control" placeholder='name' />
